@@ -2,21 +2,17 @@ from sys import argv
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-script, filename = argv
-data = {'date':[],'sender':[], 'msg':[]}
-
+# Takes a whatsapp chatlog file as parameter and returns an array
+# Every Entry of the Array is a Dictionary with the keys
+# msg, date and sender
 def parseData(f):
     chatData = []
-    #text = ""
     for line in f:
      try:
       splitted = line.split(': ')
       meta = splitted[0]
       msg = splitted[1]
-      if('Medien' not in msg): # If any form of media is sent, WhatsApp prints "<Media Omitted>". Getting rid of this. TO DO: Improve this functionality.
-       #text = text + "\n" + msg
-       #data['msg'].append(msg)
-       #splitMeta(meta)
+      if('Medien' not in msg): # Deletes every "Media" Notification
        splittedMessage = {'msg':msg, 'date':0, 'sender':""}
        splitMeta(meta,splittedMessage)
        chatData.append(splittedMessage)
@@ -36,7 +32,7 @@ def splitMeta(m, d):
     except:
         pass
 
-def getMsgTexts(chatData):
+def parseToString(chatData):
     text = ""
     for i in chatData:
         text = text + "\n" + i['msg']
@@ -45,21 +41,9 @@ def getMsgTexts(chatData):
 
 if __name__ == "__main__":
 
+    script, filename = argv
+
     f = open(filename,'r')
     chat = parseData(f)
-    text = getMsgTexts(chat)
-    #for line in data['msg']:
-    #    print(line)
-
-    wordcloud = WordCloud().generate(text)
-
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-
-    wordcloud = WordCloud(max_font_size=40).generate(text)
-    plt.figure()
-    plt.imshow(wordcloud, interpolation="bilinear")
-    plt.axis("off")
-    plt.show()
-
+    text = parseToString(chat)
     f.close()
