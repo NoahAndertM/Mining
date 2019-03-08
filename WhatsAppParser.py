@@ -14,30 +14,24 @@ def parseData(f):
       msg = splitted[1]
       if('Medien' not in msg): # Deletes every "Media" Notification
        splittedMessage = {'msg':msg, 'date':0, 'sender':""}
-       splitMeta(meta,splittedMessage)
+       splittedMessage['date'], splittedMessage['sender'] = meta.split(" - ")
        chatData.append(splittedMessage)
      except:
          pass
     return chatData
 
-def splitMeta(m, d):
-    try:
-        splitted = m.split(" - ")
-        date = splitted[0]
-        sender = splitted[1]
-        #data['date'].append(date)
-        #data['sender'].append(sender)
-        splittedMessage['date'] = date
-        splittedMessage['sender'] = sender
-    except:
-        pass
-
-def parseToString(chatData):
-    text = ""
-    for i in chatData:
-        text = text + "\n" + i['msg']
-
-    return text
+def parseToString(chatData, sender=""):
+    if sender=="":
+        text = ""
+        for i in chatData:
+            text = text + "\n" + i['msg']
+        return text
+    else:
+        text = ""
+        for i in chatData:
+            if(i['sender']==sender):
+                text = text + "\n" + i['msg']
+        return text
 
 if __name__ == "__main__":
 
